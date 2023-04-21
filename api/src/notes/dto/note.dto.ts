@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsArray } from 'class-validator';
+import { IsString, IsArray, IsOptional } from 'class-validator';
 
 export class NoteDto {
   @ApiProperty({
@@ -23,7 +23,8 @@ export class NoteDto {
     required: false,
     type: String,
   })
-
+  @IsString()
+  @IsOptional()
   readonly folderId: string;
 
   @ApiProperty({

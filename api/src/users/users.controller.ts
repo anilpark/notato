@@ -13,7 +13,9 @@ export class UsersController {
     status: HttpStatus.OK,
     description: 'The availability of the requested username',
   })
-  async isUsernameAvailable(@Param('username') username: string): Promise<{ available: boolean }> {
+  async isUsernameAvailable(
+    @Param('username') username: string,
+  ): Promise<{ available: boolean }> {
     const isAvailable = await this.usersService.isUsernameAvailable(username);
     return { available: isAvailable };
   }

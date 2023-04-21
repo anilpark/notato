@@ -1,5 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
-import { SwaggerCreateTag, SwaggerDeleteTag, SwaggerGetTags } from '../common/decorators/swagger.decorators';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  SwaggerCreateTag,
+  SwaggerDeleteTag,
+  SwaggerGetTags,
+} from '../common/decorators/swagger.decorators';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TagDto } from './dto/tag.dto';
@@ -10,12 +23,12 @@ import { TagsService } from './tags.service';
 @UseGuards(JwtAuthGuard)
 @Controller('tags')
 export class TagsController {
-  constructor(private readonly tagsService: TagsService) {
-  }
+  constructor(private readonly tagsService: TagsService) {}
+
   @SwaggerGetTags()
   @Get('/')
   getTags(@Request() req) {
-    return this.tagsService.getUserTags(req.user._id)
+    return this.tagsService.getUserTags(req.user._id);
   }
 
   @SwaggerCreateTag()

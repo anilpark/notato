@@ -6,4 +6,3 @@ export interface Folder extends Document {
   readonly ownerId: User['_id'];
   readonly notesCount: number;
 }
-

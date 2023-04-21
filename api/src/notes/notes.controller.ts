@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import {
   SwaggerCreateNote,
@@ -17,12 +29,15 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 @UseGuards(JwtAuthGuard)
 @Controller('notes')
 export class NotesController {
-  constructor(private readonly notesService: NotesService) {
-  }
+  constructor(private readonly notesService: NotesService) {}
 
   @SwaggerGetNotes()
   @Get('/')
-  getAllNotes(@Request() req, @Query('skip') skip: IPagination['skip'], @Query('limit') limit: IPagination['limit']) {
+  getAllNotes(
+    @Request() req,
+    @Query('skip') skip: IPagination['skip'],
+    @Query('limit') limit: IPagination['limit'],
+  ) {
     return this.notesService.getUserNotesNotInFolder(req.user._id, {
       skip,
       limit,
@@ -31,8 +46,16 @@ export class NotesController {
 
   @SwaggerGetNotesInFolder()
   @Get('/folder/:folderId')
-  getNotesInFolder(@Request() req, @Param('folderId') folderId: string, @Query('skip') skip: IPagination['skip'], @Query('limit') limit: IPagination['limit']) {
-    return this.notesService.getUserNotesInFolder(req.user._id, folderId, { skip, limit });
+  getNotesInFolder(
+    @Request() req,
+    @Param('folderId') folderId: string,
+    @Query('skip') skip: IPagination['skip'],
+    @Query('limit') limit: IPagination['limit'],
+  ) {
+    return this.notesService.getUserNotesInFolder(req.user._id, folderId, {
+      skip,
+      limit,
+    });
   }
 
   @SwaggerCreateNote()
@@ -46,10 +69,13 @@ export class NotesController {
 
   @SwaggerEditNote()
   @Patch('/edit/:id')
-  editNote(@Request() req, @Body() body: UpdateNoteDto, @Param('id') id: string) {
+  editNote(
+    @Request() req,
+    @Body() body: UpdateNoteDto,
+    @Param('id') id: string,
+  ) {
     return this.notesService.editNote(id, body);
   }
-
 
   @Put('/:noteId/assign-tag/:tagId')
   assignTag(@Param('noteId') noteId: string, @Param('tagId') tagId: string) {
@@ -57,7 +83,10 @@ export class NotesController {
   }
 
   @Put('/:noteId/move-to-folder/:folderId')
-  moveToFolder(@Param('noteId') noteId: string, @Param('folderId') folderId: string) {
+  moveToFolder(
+    @Param('noteId') noteId: string,
+    @Param('folderId') folderId: string,
+  ) {
     return this.notesService.moveNoteIntoFolder(noteId, folderId);
   }
 
@@ -67,7 +96,10 @@ export class NotesController {
   }
 
   @Delete('/:noteId/remove-from-folder/:folderId')
-  removeFromFolder(@Param('noteId') noteId: string, @Param('folderId') folderId: string) {
+  removeFromFolder(
+    @Param('noteId') noteId: string,
+    @Param('folderId') folderId: string,
+  ) {
     return this.notesService.removeNoteFromFolder(noteId, folderId);
   }
 }

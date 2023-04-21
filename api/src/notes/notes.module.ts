@@ -8,15 +8,17 @@ import { FoldersModule } from '../folders/folders.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{
-      name: 'Note', schema: NoteSchema
-    }]),
+    MongooseModule.forFeature([
+      {
+        name: 'Note',
+        schema: NoteSchema,
+      },
+    ]),
     forwardRef(() => TagsModule),
     forwardRef(() => FoldersModule),
-    ],
+  ],
   controllers: [NotesController],
   providers: [NotesService],
   exports: [NotesService],
 })
-export class NotesModule {
-}
+export class NotesModule {}

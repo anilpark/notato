@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Folder } from './folder.interface';
@@ -10,8 +15,9 @@ import { FolderDto } from './dto/folder.dto';
 export class FoldersService {
   constructor(
     @InjectModel('Folder') private folderModel: Model<Folder>,
-    @Inject(forwardRef(() => NotesService)) private readonly notesService: NotesService) {
-  }
+    @Inject(forwardRef(() => NotesService))
+    private readonly notesService: NotesService,
+  ) {}
 
   async getById(id: string): Promise<Folder> {
     return this.folderModel.findById(id);
@@ -22,14 +28,24 @@ export class FoldersService {
     return newFolder.save();
   }
 
-  async getAllUserFolders(ownerId: string, { skip = 0, limit = 10 }: IPagination = { skip: 0, limit: 10 }) {
-    return this.folderModel.find({
-      ownerId,
-    }).skip(skip).limit(limit);
+  async getAllUserFolders(
+    ownerId: string,
+    { skip = 0, limit = 10 }: IPagination = { skip: 0, limit: 10 },
+  ) {
+    return this.folderModel
+      .find({
+        ownerId,
+      })
+      .skip(skip)
+      .limit(limit);
   }
 
   async editFolder(id: string, updateFolderDto: FolderDto): Promise<Folder> {
-    const updatedFolder = await this.folderModel.findByIdAndUpdate(id, updateFolderDto, { new: true });
+    const updatedFolder = await this.folderModel.findByIdAndUpdate(
+      id,
+      updateFolderDto,
+      { new: true },
+    );
     if (!updatedFolder) {
       throw new NotFoundException(`Folder not found`);
     }
@@ -37,12 +53,10 @@ export class FoldersService {
   }
 
   async updateFolderNotesCount(folderId: string, incrementValue: number) {
-    await this.folderModel.findByIdAndUpdate(
-      folderId,
-      { $inc: { notesCount: incrementValue } },
-    );
+    await this.folderModel.findByIdAndUpdate(folderId, {
+      $inc: { notesCount: incrementValue },
+    });
   }
-
 
   async deleteFolder(_id: string): Promise<void> {
     const result = await this.folderModel.deleteOne({ _id });

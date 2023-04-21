@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Note } from './note.interface';
@@ -11,38 +16,60 @@ import { FoldersService } from '../folders/folders.service';
 export class NotesService {
   constructor(
     @InjectModel('Note') private noteModel: Model<Note>,
-    @Inject(forwardRef(() => TagsService)) private readonly tagsService: TagsService,
-    @Inject(forwardRef(() => FoldersService)) private readonly foldersService: FoldersService) {
-  }
+    @Inject(forwardRef(() => TagsService))
+    private readonly tagsService: TagsService,
+    @Inject(forwardRef(() => FoldersService))
+    private readonly foldersService: FoldersService,
+  ) {}
 
   async create(note: Partial<Note>): Promise<Note> {
     const newNote = await this.noteModel.create(note);
-    if(note.folderId){
-      await this.foldersService.updateFolderNotesCount(newNote._id, 1)
+    if (note.folderId) {
+      await this.foldersService.updateFolderNotesCount(newNote._id, 1);
     }
     return newNote.save();
   }
 
   async editNote(id: string, updateNoteDto: UpdateNoteDto): Promise<Note> {
-    const updatedNote = await this.noteModel.findByIdAndUpdate(id, updateNoteDto, { new: true });
+    const updatedNote = await this.noteModel.findByIdAndUpdate(
+      id,
+      updateNoteDto,
+      { new: true },
+    );
     if (!updatedNote) {
       throw new NotFoundException(`Note not found`);
     }
     return updatedNote;
   }
 
-  async getUserNotesNotInFolder(ownerId: string, { skip = 0, limit = 10 }: IPagination = { skip: 0, limit: 10 }) {
-    return this.noteModel.find({
-      ownerId,
-      folderId: null,
-    }).skip(skip).limit(limit);
+  async getUserNotesNotInFolder(
+    ownerId: string,
+    { skip = 0, limit = 10 }: IPagination = { skip: 0, limit: 10 },
+  ) {
+    return this.noteModel
+      .find({
+        ownerId,
+        folderId: null,
+      })
+      .skip(skip)
+      .limit(limit);
   }
 
-  async getUserNotesInFolder(ownerId: string, folderId: string, { skip = 0, limit = 10 }: IPagination = { skip: 0, limit: 10 }) {
-    return this.noteModel.find({
-      ownerId,
-      folderId,
-    }).skip(skip).limit(limit);
+  async getUserNotesInFolder(
+    ownerId: string,
+    folderId: string,
+    { skip = 0, limit = 10 }: IPagination = {
+      skip: 0,
+      limit: 10,
+    },
+  ) {
+    return this.noteModel
+      .find({
+        ownerId,
+        folderId,
+      })
+      .skip(skip)
+      .limit(limit);
   }
 
   async assignTagToNote(noteId: string, tagId: string) {
@@ -79,7 +106,7 @@ export class NotesService {
     const updatedNote = await this.noteModel.findByIdAndUpdate(
       noteId,
       {
-        $pull: { tags: tagId }
+        $pull: { tags: tagId },
       },
       { new: true },
     );
@@ -98,7 +125,7 @@ export class NotesService {
     );
   }
 
-  async moveNoteIntoFolder(noteId: string, folderId: string){
+  async moveNoteIntoFolder(noteId: string, folderId: string) {
     const existingFolder = await this.foldersService.getById(folderId);
 
     if (!existingFolder) {
@@ -117,11 +144,10 @@ export class NotesService {
       throw new NotFoundException(`Note not found`);
     }
 
-    await this.foldersService.updateFolderNotesCount(folderId, 1)
+    await this.foldersService.updateFolderNotesCount(folderId, 1);
 
     return updatedNote;
   }
-
 
   async removeNoteFromFolder(noteId: string, folderId: string) {
     const existingFolder = await this.foldersService.getById(folderId);
@@ -133,7 +159,7 @@ export class NotesService {
     const updatedNote = await this.noteModel.findByIdAndUpdate(
       noteId,
       {
-        folderId: null
+        folderId: null,
       },
       { new: true },
     );
@@ -142,15 +168,12 @@ export class NotesService {
       throw new NotFoundException(`Note not found`);
     }
 
-    await this.foldersService.updateFolderNotesCount(folderId, -1)
+    await this.foldersService.updateFolderNotesCount(folderId, -1);
 
     return updatedNote;
   }
 
   async removeAllNotesFromFolder(folderId: string): Promise<void> {
-    await this.noteModel.updateMany(
-      { folderId },
-      { folderId: null },
-    );
+    await this.noteModel.updateMany({ folderId }, { folderId: null });
   }
 }

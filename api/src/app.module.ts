@@ -22,8 +22,12 @@ import { NotesModule } from './notes/notes.module';
     FoldersModule,
     NotesModule,
   ],
-  controllers: [AppController, AuthController, UsersController, NotesController, ],
+  controllers: [
+    AppController,
+    AuthController,
+    UsersController,
+    NotesController,
+  ],
   providers: [AppService],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -7,9 +7,11 @@ import { NotesModule } from '../notes/notes.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'Tag', schema: TagSchema }]),forwardRef(() => NotesModule)],
+    MongooseModule.forFeature([{ name: 'Tag', schema: TagSchema }]),
+    forwardRef(() => NotesModule),
+  ],
   controllers: [TagsController],
   providers: [TagsService],
-  exports: [TagsService]
+  exports: [TagsService],
 })
 export class TagsModule {}
